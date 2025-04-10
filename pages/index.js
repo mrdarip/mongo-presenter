@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { isValidUrl } from '@/lib/utils';
 
 export async function getStaticProps() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
@@ -28,24 +29,35 @@ export async function getStaticProps() {
 }
 
 export default function Main({ documents }) {
+  const columns = 
+    {"num_expediente": "Num Expediente",
+    "lugar": "Lugar",
+    "valor_estimado": "Valor Estimado",
+    "origen": "Origen"};
+
   return (
-    <div>
+    <div className="full-width">
       <h1>Documents</h1>
-      <table>
-        <thead>
+      <table> 
+         <thead>
           <tr>
-            <th>Num Expediente</th>
-            <th>Lugar</th>
-            <th>Valor Estimado</th>
+            {Object.keys(columns).map((key) => (
+              <th key={key}>{columns[key]}</th>
+            ))}
             <th>Details</th>
           </tr>
         </thead>
         <tbody>
-          {documents.map((doc) => (
-            <tr key={doc._id}>
-              <td>{doc.num_expediente}</td>
-              <td>{doc.lugar}</td>
-              <td>{doc.valor_estimado}</td>
+          {documents.filter(doc => doc.num_expediente).map((doc, index) => (
+            <tr key={doc._id} style={{ '--row-number': `${index * 0.1}s` }}>
+
+              {Object.keys(columns).map((key,value) => (
+
+                <td key={key} title={columns[key]}>
+                  {doc[key]}
+                </td>
+              ))}
+
               <td>
                 <a href={`/details/${doc._id}`}>View Details</a>
               </td>

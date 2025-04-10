@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 import { isValidUrl } from '@/lib/utils';
+import Link from 'next/link';
 
 export async function getStaticProps() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
@@ -51,12 +52,16 @@ export default function Main({ documents }) {
           <tbody>
             {documents.filter(doc => doc.num_expediente).map((doc, index) => (
               <tr key={doc._id} style={{ '--row-number': `${index * 0.1}s` }}>
-
                 {Object.keys(columns).map((key,value) => (
-
-                  <td key={key} title={columns[key]}>
-                    {doc[key]}
-                  </td>
+                  isValidUrl(doc[key]) ? (
+                    <td key={key} title={columns[key]}>
+                      <Link href={doc[key]}>{columns[key]}</Link>
+                    </td>
+                  ) : (
+                    <td key={key} title={columns[key]}>
+                      {doc[key]}
+                    </td>
+                  )
                 ))}
 
                 <td>

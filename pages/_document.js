@@ -13,6 +13,9 @@ export default function Document() {
           <Main />
           <NextScript />
         </main>
+        <footer>
+          <p>mrdarip</p>
+        </footer>
       </body>
     </Html>
   );

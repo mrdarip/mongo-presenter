@@ -36,35 +36,37 @@ export default function Main({ documents }) {
     "origen": "Origen"};
 
   return (
-    <div className="full-width">
+    <>
       <h1>Documents</h1>
-      <table> 
-         <thead>
-          <tr>
-            {Object.keys(columns).map((key) => (
-              <th key={key}>{columns[key]}</th>
-            ))}
-            <th>Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {documents.filter(doc => doc.num_expediente).map((doc, index) => (
-            <tr key={doc._id} style={{ '--row-number': `${index * 0.1}s` }}>
-
-              {Object.keys(columns).map((key,value) => (
-
-                <td key={key} title={columns[key]}>
-                  {doc[key]}
-                </td>
+      <div div className="full-width">
+        <table> 
+          <thead>
+            <tr>
+              {Object.keys(columns).map((key) => (
+                <th key={key}>{columns[key]}</th>
               ))}
-
-              <td>
-                <a href={`/details/${doc._id}`}>View Details</a>
-              </td>
+              <th>Details</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {documents.filter(doc => doc.num_expediente).map((doc, index) => (
+              <tr key={doc._id} style={{ '--row-number': `${index * 0.1}s` }}>
+
+                {Object.keys(columns).map((key,value) => (
+
+                  <td key={key} title={columns[key]}>
+                    {doc[key]}
+                  </td>
+                ))}
+
+                <td>
+                  <a href={`/details/${doc._id}`}>View Details</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

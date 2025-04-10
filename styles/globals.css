@@ -48,7 +48,7 @@ table th, table td {
   border-bottom: 1px solid #ddd;
 }
 
-table th {
+table thead {
   background-color: #c1ebc2;
   font-weight: bold;
 }
@@ -136,4 +136,10 @@ div.full-width {
   
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(6, 70, 0, 0.4);
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }

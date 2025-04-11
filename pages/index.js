@@ -56,9 +56,9 @@ export default function Main({ documents }) {
               <tr key={doc._id} style={{ '--row-number': `${rowIndex * 50}ms` }}>
                 {keys.map((key, columnIndex) => (
                    <td key={key} title={doc[key]} style={{ '--column-number': `${columnIndex * 100}ms` }}>
-                    {key === 'url' && isValidUrl(doc[key]) ? (
+                    {isValidUrl(doc[key]) ? (
                       <Link href={doc[key]}>
-                        {doc[key]}
+                        Link
                       </Link>
                     ) : (
                       doc[key]

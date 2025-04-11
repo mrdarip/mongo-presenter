@@ -1,4 +1,6 @@
+import { isValidUrl } from '@/lib/utils';
 import { MongoClient, ObjectId } from 'mongodb';
+import Link from 'next/link';
 
 export async function getStaticPaths() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
@@ -81,12 +83,18 @@ export default function Details({ document }) {
       {Object.keys(cleanDocument).map((key) => (
         <div key={key}>
           <strong>{key}</strong>: 
-          <p>{cleanDocument[key]}</p>
+          <p>
+            {isValidUrl(cleanDocument[key])?(
+              <Link href={cleanDocument[key]}>
+                Link
+              </Link>
+            ):(
+              cleanDocument[key]
+            )}
+          </p>
           
         </div>
       ))}
-      
-      
       
       <button onClick={() => window.history.back()}>Go Back</button>
 

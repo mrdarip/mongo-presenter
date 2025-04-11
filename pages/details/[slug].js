@@ -1,6 +1,6 @@
 import { isValidUrl } from '@/lib/utils';
 import { MongoClient, ObjectId } from 'mongodb';
-import Link from 'next/link';
+import RenderCellContent from '@/components/RenderCellContent';
 
 export async function getStaticPaths() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
@@ -84,13 +84,7 @@ export default function Details({ document }) {
         <div key={key}>
           <strong>{key}</strong>: 
           <p>
-            {isValidUrl(cleanDocument[key])?(
-              <Link href={cleanDocument[key]}>
-                Link
-              </Link>
-            ):(
-              cleanDocument[key]
-            )}
+            <RenderCellContent value={cleanDocument[key]} />
           </p>
           
         </div>

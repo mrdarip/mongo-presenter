@@ -50,21 +50,22 @@ export default function Main({ documents }) {
             </tr>
           </thead>
           <tbody>
-            {documents.filter(doc => doc.num_expediente).map((doc, index) => (
-              <tr key={doc._id} style={{ '--row-number': `${index * 0.1}s` }}>
-                {Object.keys(columns).map((key,value) => (
+            {documents.filter(doc => doc.num_expediente).map((doc, rowIndex) => (
+              <tr key={doc._id} style={{ '--row-number': `${rowIndex * 0.1}s` }}>
+
+                {Object.keys(columns).map((key, columnIndex) => (
                   isValidUrl(doc[key]) ? (
-                    <td key={key} title={columns[key]}>
+                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex}` }}>
                       <Link href={doc[key]}>{columns[key]}</Link>
                     </td>
                   ) : (
-                    <td key={key} title={columns[key]}>
+                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex}` }}>
                       {doc[key]}
                     </td>
                   )
                 ))}
 
-                <td>
+                <td style={{ '--column-number': `${Object.keys(columns).length}` }}>
                   <a href={`/details/${doc._id}`}>View Details</a>
                 </td>
               </tr>

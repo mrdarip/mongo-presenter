@@ -3,7 +3,7 @@ import { isValidUrl } from '@/lib/utils';
 import Link from 'next/link';
 
 export async function getStaticProps() {
-  const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
+  const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION,MONGODB_MAIN_AGGREGATE_QUERY } = process.env;
 
   if (!MONGODB_URI || !MONGODB_DATABASE || !MONGODB_COLLECTION) {
     throw new Error('Missing MongoDB configuration in .env file');
@@ -16,7 +16,8 @@ export async function getStaticProps() {
     const db = client.db(MONGODB_DATABASE);
     const collection = db.collection(MONGODB_COLLECTION);
 
-    const documents = await collection.find({}).toArray();
+    const pipeline = JSON.parse(MONGODB_MAIN_AGGREGATE_QUERY );
+    const documents = await collection.aggregate(pipeline).toArray();
 
     return {
       props: {
@@ -30,44 +31,45 @@ export async function getStaticProps() {
 }
 
 export default function Main({ documents }) {
-  const columns = 
-    {"num_expediente": "Num Expediente",
-    "lugar": "Lugar",
-    "valor_estimado": "Valor Estimado",
-    "origen": "Origen"};
-
+  const cleanedDocuments = documents.map((doc) => {
+    const cleanedDoc = { ...doc };;
+    delete cleanedDoc._id;
+    return cleanedDoc;
+  });
+  const keys = [...new Set(cleanedDocuments.flatMap(obj => Object.keys(obj)))];
   return (
     <>
       <h1>Documents</h1>
-      <div div className="full-width">
-        <table> 
+      <div className="full-width">
+      <table> 
           <thead>
             <tr>
-              {Object.keys(columns).map((key) => (
-                <th key={key}>{columns[key]}</th>
+              {keys.map((key) => (
+                <th key={key}>{key}</th>
               ))}
+
               <th>Details</th>
             </tr>
           </thead>
           <tbody>
-            {documents.filter(doc => doc.num_expediente).map((doc, rowIndex) => (
+            {documents.map((doc, rowIndex) => (
               <tr key={doc._id} style={{ '--row-number': `${rowIndex * 50}ms` }}>
-
-                {Object.keys(columns).map((key, columnIndex) => (
-                  isValidUrl(doc[key]) ? (
-                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex* 100}ms` }}>
-                      <Link href={doc[key]}>{columns[key]}</Link>
-                    </td>
-                  ) : (
-                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex * 100}ms` }}>
-                      {doc[key]}
-                    </td>
-                  )
+                {keys.map((key, columnIndex) => (
+                   <td key={key} title={doc[key]} style={{ '--column-number': `${columnIndex * 100}ms` }}>
+                    {key === 'url' && isValidUrl(doc[key]) ? (
+                      <Link href={doc[key]}>
+                        {doc[key]}
+                      </Link>
+                    ) : (
+                      doc[key]
+                    )}
+                  </td>
                 ))}
 
-                <td style={{ '--column-number': `${Object.keys(columns).length * 100}ms` }}>
-                  <a href={`/details/${doc._id}`}>View Details</a>
+                <td style={{ '--column-number': `${keys.length * 100}ms` }}>
+                  <Link href={`/details/${doc._id}`}>View Details</Link>
                 </td>
+
               </tr>
             ))}
           </tbody>

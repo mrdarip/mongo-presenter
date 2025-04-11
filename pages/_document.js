@@ -7,7 +7,12 @@ export default function Document() {
       <Head />
       <body className="antialiased">
         <header>
-         <Link href="/"><h1>Mongo Presenter</h1></Link>
+          <div>
+          <Link href="/"><h1>Mongo Presenter</h1></Link>
+          </div>
+          <div>
+            <Link href="/"><h2>Home</h2></Link>
+          </div>
         </header>
         <main>
           <Main />

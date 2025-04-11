@@ -16,13 +16,25 @@ body {
 
 header {
   background-color: #4CAF50;
+  background-image: linear-gradient(to right, #4CAF50, #2e7d32);
+  background-image: url(https://img.goodfon.com/original/1920x1200/7/da/green-abstract-simple-waves.jpg);
+  background-size: cover;
   color: white;
-  padding: 1rem 10vw;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem 5vw;
+  box-shadow: 0px 4px 8px 8px rgba(0, 0, 0, 0.30);
+
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-header a h1 {
-  font-size: 2rem;
+header div {
+  margin: 0;
+  vertical-align: middle;
+}
+
+header h1, header h2 {
   margin: 0;
   color: white;
 }
@@ -53,7 +65,7 @@ table thead {
   font-weight: bold;
 }
 
-table tr:hover {
+table tbody tr:hover  {
   background-color: #f1f1f1;
 }
 
@@ -148,4 +160,9 @@ thead {
 
 section {
   margin: 1rem 0;
+}
+
+/* scrollbar styles */
+body{
+  scrollbar-color: #2a632b #00000000;
 }

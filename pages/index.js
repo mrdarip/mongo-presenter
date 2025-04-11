@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb';
 import Link from 'next/link';
 import TextToLink from '@/components/TextToLink';
+import Copyable from '@/components/Copyable';
 
 export async function getStaticProps() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION,MONGODB_MAIN_AGGREGATE_QUERY } = process.env;
@@ -56,7 +57,9 @@ export default function Main({ documents }) {
               <tr key={doc._id} style={{ '--row-number': `${rowIndex * 50}ms` }}>
                 {keys.map((key, columnIndex) => (
                    <td key={key} title={doc[key]} style={{ '--column-number': `${columnIndex * 100}ms` }}>
-                    <TextToLink value={doc[key]} />
+                    <Copyable text={doc[key]}>
+                      <TextToLink value={doc[key]} />
+                    </Copyable>
                   </td>
                 ))}
 

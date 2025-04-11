@@ -62,17 +62,17 @@ table tr:nth-child(even) {
 }
 
 @keyframes row-loading {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(10px) rotateX(0deg); }
+  100% { opacity: 1; transform: translateY(0) rotateX(360deg); }
 }
 
-table tbody tr {
+table tbody tr td{
   opacity: 0;
   animation: row-loading 0.5s ease-in-out forwards;
 }
 
-table tbody tr {
-  animation-delay: var(--row-number);
+table tbody tr td {
+  animation-delay: calc(var(--row-number) + var(--column-number));
 }
 
 div {

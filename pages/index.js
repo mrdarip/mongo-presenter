@@ -51,21 +51,21 @@ export default function Main({ documents }) {
           </thead>
           <tbody>
             {documents.filter(doc => doc.num_expediente).map((doc, rowIndex) => (
-              <tr key={doc._id} style={{ '--row-number': `${rowIndex * 0.1}s` }}>
+              <tr key={doc._id} style={{ '--row-number': `${rowIndex * 50}ms` }}>
 
                 {Object.keys(columns).map((key, columnIndex) => (
                   isValidUrl(doc[key]) ? (
-                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex}` }}>
+                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex* 100}ms` }}>
                       <Link href={doc[key]}>{columns[key]}</Link>
                     </td>
                   ) : (
-                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex}` }}>
+                    <td key={key} title={columns[key]} style={{ '--column-number': `${columnIndex * 100}ms` }}>
                       {doc[key]}
                     </td>
                   )
                 ))}
 
-                <td style={{ '--column-number': `${Object.keys(columns).length}` }}>
+                <td style={{ '--column-number': `${Object.keys(columns).length * 100}ms` }}>
                   <a href={`/details/${doc._id}`}>View Details</a>
                 </td>
               </tr>

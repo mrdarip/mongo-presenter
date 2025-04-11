@@ -143,3 +143,18 @@ thead {
   top: 0;
   z-index: 1;
 }
+
+/* scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c8a3e;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #45a049;
+}

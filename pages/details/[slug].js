@@ -65,30 +65,25 @@ export async function getStaticProps({ params }) {
 export default function Details({ document }) {
   if (!document) return <div>Loading...</div>;
 
+  const columns =
+  {"num_expediente": "Num Expediente",
+  "lugar": "Lugar",
+  "valor_estimado": "Valor Estimado",
+  "origen": "Origen"};
+
   return (
     <div>
       <h1>Document Details</h1>
-      <div>
-        <strong>Num Expediente:</strong> {document.num_expediente}
-      </div>
-      <div>
-        <strong>Lugar:</strong> {document.lugar}
-      </div>
-      <div>
-        <strong>Valor Estimado:</strong> {document.valor_estimado}
-      </div>
-      <div>
-        <strong>Duracion Contrato:</strong> {document.duracion_contrato}
-      </div>
-      <div>
-        <strong>Organo Contratacion:</strong> {document.organo_contratacion}
-      </div>
-      <div>
-        <strong>Titulo Expediente:</strong> {document.titulo_expediente}
-      </div>
-      <div>
-        <strong>Descripcion:</strong> {document.descripcion}
-      </div>
+
+      {Object.keys(columns).map((key) => (
+        <section key={key}>
+          <strong>{columns[key]}:</strong>
+          <p>{document[key]}</p>
+        </section>
+      ))}
+      
+      <button onClick={() => window.history.back()}>Go Back</button>
+
     </div>
   );
 }

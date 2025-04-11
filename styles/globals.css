@@ -92,6 +92,8 @@ strong {
 main {
   width: 80%;
   margin: 0 auto;
+  
+  min-height: 100vh;
 }
 
 /* Style buttons */
@@ -157,4 +159,8 @@ thead {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #45a049;
+}
+
+section {
+  margin: 1rem 0;
 }

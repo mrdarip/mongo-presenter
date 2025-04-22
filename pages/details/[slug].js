@@ -1,12 +1,12 @@
-import { isValidUrl } from '@/lib/utils';
-import { MongoClient, ObjectId } from 'mongodb';
-import TextToLink from '@/components/TextToLink';
+import { isValidUrl } from "@/lib/utils";
+import { MongoClient, ObjectId } from "mongodb";
+import TextToLink from "@/components/TextToLink";
 
 export async function getStaticPaths() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
 
   if (!MONGODB_URI || !MONGODB_DATABASE || !MONGODB_COLLECTION) {
-    throw new Error('Missing MongoDB configuration in .env file');
+    throw new Error("Missing MongoDB configuration in .env file");
   }
 
   const client = new MongoClient(MONGODB_URI);
@@ -16,7 +16,9 @@ export async function getStaticPaths() {
     const db = client.db(MONGODB_DATABASE);
     const collection = db.collection(MONGODB_COLLECTION);
 
-    const documents = await collection.aggregate([{$project:{_id:1}}]).toArray();
+    const documents = await collection
+      .aggregate([{ $project: { _id: 1 } }])
+      .toArray();
 
     const paths = documents.map((doc) => ({
       params: { slug: doc._id.toString() },
@@ -32,10 +34,18 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION, MONGODB_DETAILS_AGGREGATE_QUERY } = process.env;
+  const {
+    MONGODB_URI,
+    MONGODB_DATABASE,
+    MONGODB_COLLECTION,
+    MONGODB_DETAILS_AGGREGATE_QUERY,
+    MONGODB_COLLECTION2,
+    MONGODB_MAIN_AGGREGATE_QUERY2,
+    MONGODB_FIELD_TO_MATCH,
+  } = process.env;
 
   if (!MONGODB_URI || !MONGODB_DATABASE || !MONGODB_COLLECTION) {
-    throw new Error('Missing MongoDB configuration in .env file');
+    throw new Error("Missing MongoDB configuration in .env file");
   }
 
   const client = new MongoClient(MONGODB_URI);
@@ -46,9 +56,25 @@ export async function getStaticProps({ params }) {
     const collection = db.collection(MONGODB_COLLECTION);
 
     const envPipeline = JSON.parse(MONGODB_DETAILS_AGGREGATE_QUERY);
-    const pipeline = [{$match: { _id: new ObjectId(params.slug) } }].concat(envPipeline);
+    const pipeline = [{ $match: { _id: new ObjectId(params.slug) } }].concat(
+      envPipeline
+    );
 
     const document = await collection.aggregate(pipeline).toArray();
+
+    const collection2 = db.collection(MONGODB_COLLECTION2);
+    const envPipeline2 = JSON.parse(MONGODB_MAIN_AGGREGATE_QUERY2);
+
+    const valueToMatch = (
+      await collection
+        .aggregate([{ $match: { _id: new ObjectId(params.slug) } }])
+        .toArray()
+    )[0][MONGODB_FIELD_TO_MATCH];
+
+    const pipeline2 = [
+      { $match: { [MONGODB_FIELD_TO_MATCH]: valueToMatch } },
+    ].concat(envPipeline2);
+    const document2 = await collection2.aggregate(pipeline2).toArray();
 
     if (!document) {
       return {
@@ -59,6 +85,7 @@ export async function getStaticProps({ params }) {
     return {
       props: {
         document: JSON.parse(JSON.stringify(document)),
+        document2: JSON.parse(JSON.stringify(document2)),
       },
       revalidate: 10, // Revalidate every 10 seconds
     };
@@ -67,11 +94,11 @@ export async function getStaticProps({ params }) {
   }
 }
 
-export default function Details({ document }) {
+export default function Details({ document, document2 }) {
   if (!document) return <div>Loading...</div>;
 
   const cleanDocument = document.map((doc) => {
-    const cleanedDoc = { ...doc };;
+    const cleanedDoc = { ...doc };
     delete cleanedDoc._id;
     return cleanedDoc;
   })[0];
@@ -82,16 +109,39 @@ export default function Details({ document }) {
 
       {Object.keys(cleanDocument).map((key) => (
         <div key={key}>
-          <strong>{key}</strong>: 
+          <strong>{key}</strong>:
           <p>
             <TextToLink value={cleanDocument[key]} />
           </p>
-          
         </div>
       ))}
-      
-      <button onClick={() => window.history.back()}>Go Back</button>
 
+      <h2>Related Documents</h2>
+      <div className="full-width">
+        <table>
+          <thead>
+            <tr>
+              {document2.length > 0 &&
+                Object.keys(document2[0])
+                  .filter((key) => key !== "_id")
+                  .map((key) => <th key={key}>{key}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {document2.map((doc) => (
+              <tr key={doc._id}>
+                {Object.keys(doc)
+                  .filter((key) => key !== "_id")
+                  .map((key) => (
+                    <td key={key}>{JSON.stringify(doc[key])}</td>
+                  ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <button onClick={() => window.history.back()}>Go Back</button>
     </div>
   );
 }

@@ -1,13 +1,18 @@
-import { MongoClient } from 'mongodb';
-import Link from 'next/link';
-import TextToLink from '@/components/TextToLink';
-import Copyable from '@/components/Copyable';
+import { MongoClient } from "mongodb";
+import Link from "next/link";
+import TextToLink from "@/components/TextToLink";
+import Copyable from "@/components/Copyable";
 
 export async function getStaticProps() {
-  const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION,MONGODB_MAIN_AGGREGATE_QUERY } = process.env;
+  const {
+    MONGODB_URI,
+    MONGODB_DATABASE,
+    MONGODB_COLLECTION,
+    MONGODB_MAIN_AGGREGATE_QUERY,
+  } = process.env;
 
   if (!MONGODB_URI || !MONGODB_DATABASE || !MONGODB_COLLECTION) {
-    throw new Error('Missing MongoDB configuration in .env file');
+    throw new Error("Missing MongoDB configuration in .env file");
   }
 
   const client = new MongoClient(MONGODB_URI);
@@ -17,7 +22,7 @@ export async function getStaticProps() {
     const db = client.db(MONGODB_DATABASE);
     const collection = db.collection(MONGODB_COLLECTION);
 
-    const pipeline = JSON.parse(MONGODB_MAIN_AGGREGATE_QUERY );
+    const pipeline = JSON.parse(MONGODB_MAIN_AGGREGATE_QUERY);
     const documents = await collection.aggregate(pipeline).toArray();
 
     return {
@@ -33,16 +38,18 @@ export async function getStaticProps() {
 
 export default function Main({ documents }) {
   const cleanedDocuments = documents.map((doc) => {
-    const cleanedDoc = { ...doc };;
+    const cleanedDoc = { ...doc };
     delete cleanedDoc._id;
     return cleanedDoc;
   });
-  const keys = [...new Set(cleanedDocuments.flatMap(obj => Object.keys(obj)))];
+  const keys = [
+    ...new Set(cleanedDocuments.flatMap((obj) => Object.keys(obj))),
+  ];
   return (
     <>
       <h1>Documents</h1>
       <div className="full-width">
-      <table> 
+        <table>
           <thead>
             <tr>
               {keys.map((key) => (
@@ -54,19 +61,25 @@ export default function Main({ documents }) {
           </thead>
           <tbody>
             {documents.map((doc, rowIndex) => (
-              <tr key={doc._id} style={{ '--row-number': `${rowIndex * 50}ms` }}>
+              <tr
+                key={doc._id}
+                style={{ "--row-number": `${rowIndex * 50}ms` }}
+              >
                 {keys.map((key, columnIndex) => (
-                   <td key={key} title={doc[key]} style={{ '--column-number': `${columnIndex * 100}ms` }}>
+                  <td
+                    key={key}
+                    title={doc[key]}
+                    style={{ "--column-number": `${columnIndex * 100}ms` }}
+                  >
                     <Copyable text={doc[key]}>
                       <TextToLink value={doc[key]} />
                     </Copyable>
                   </td>
                 ))}
 
-                <td style={{ '--column-number': `${keys.length * 100}ms` }}>
+                <td style={{ "--column-number": `${keys.length * 100}ms` }}>
                   <Link href={`/details/${doc._id}`}>View Details</Link>
                 </td>
-
               </tr>
             ))}
           </tbody>

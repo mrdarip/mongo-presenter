@@ -52,6 +52,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   background-color: white;
+  table-layout: fixed;
 }
 
 table th, table td {
@@ -81,10 +82,11 @@ table tr:nth-child(even) {
 table tbody tr td{
   opacity: 0;
   animation: row-loading 0.5s ease-in-out forwards;
-}
-
-table tbody tr td {
   animation-delay: calc(var(--row-number) + var(--column-number));
+}
+pre{
+  max-height: 25vh;
+  overflow: hidden;
 }
 
 div {

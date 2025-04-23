@@ -1,6 +1,8 @@
 import { isValidUrl } from "@/lib/utils";
 import { MongoClient, ObjectId } from "mongodb";
 import TextToLink from "@/components/TextToLink";
+import React from "react";
+import ExpandableText from "@/components/ExpandableText";
 
 export async function getStaticPaths() {
   const { MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
@@ -133,7 +135,7 @@ export default function Details({ document, document2 }) {
                 {Object.keys(doc)
                   .filter((key) => key !== "_id")
                   .map((key) => (
-                    <td key={key}>{JSON.stringify(doc[key])}</td>
+                    <td key={key}><ExpandableText className="longCode" text = {toPrettyJson(doc[key])}/></td>
                   ))}
               </tr>
             ))}
@@ -144,4 +146,11 @@ export default function Details({ document, document2 }) {
       <button onClick={() => window.history.back()}>Go Back</button>
     </div>
   );
+}
+
+function toPrettyJson(value) {
+  if (typeof value === 'string') {
+    return value; // Return plain strings without quotes
+  }
+  return JSON.stringify(value, null, 2); // Pretty print other types
 }

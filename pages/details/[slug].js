@@ -106,50 +106,59 @@ export default function Details({ document, document2 }) {
   })[0];
 
   return (
-    <div>
-      <h1>Document Details</h1>
+    <>
+      <section>
+        <h1>Document Details</h1>
 
-      {Object.keys(cleanDocument).map((key) => (
-        <div key={key}>
-          <strong>{key}</strong>:
-          <p>
-            <TextToLink value={cleanDocument[key]} />
-          </p>
-        </div>
-      ))}
-
-      <h2>Related Documents</h2>
-      <div className="full-width">
-        <table>
-          <thead>
-            <tr>
-              {document2.length > 0 &&
-                Object.keys(document2[0])
-                  .filter((key) => key !== "_id")
-                  .map((key) => <th key={key}>{key}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {document2.map((doc) => (
-              <tr key={doc._id}>
-                {Object.keys(doc)
-                  .filter((key) => key !== "_id")
-                  .map((key) => (
-                    <td key={key}><ExpandableText className="longCode" text = {toPrettyJson(doc[key])}/></td>
-                  ))}
+        {Object.keys(cleanDocument).map((key) => (
+          <div key={key}>
+            <strong>{key}</strong>:
+            <p>
+              <TextToLink value={cleanDocument[key]} />
+            </p>
+          </div>
+        ))}
+      </section>
+      <section>
+        <h2>Related Documents</h2>
+        <div className="full-width">
+          <table>
+            <thead>
+              <tr>
+                {document2.length > 0 &&
+                  Object.keys(document2[0])
+                    .filter((key) => key !== "_id")
+                    .map((key) => <th key={key}>{key}</th>)}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <button onClick={() => window.history.back()}>Go Back</button>
-    </div>
+            </thead>
+            <tbody>
+              {document2.map((doc) => (
+                <tr key={doc._id}>
+                  {Object.keys(doc)
+                    .filter((key) => key !== "_id")
+                    .map((key) => (
+                      <td key={key}>
+                        <ExpandableText
+                          className="longCode"
+                          text={toPrettyJson(doc[key])}
+                        />
+                      </td>
+                    ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section>
+        <button onClick={() => window.history.back()}>Go Back</button>
+      </section>
+    </>
   );
 }
 
 function toPrettyJson(value) {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value; // Return plain strings without quotes
   }
   return JSON.stringify(value, null, 2); // Pretty print other types
